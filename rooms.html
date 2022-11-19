@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <Title>Chaterz - Rooms</Title>
+        <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<style>
+    body{
+        background-color: #0A194A;
+    }
+    h2,p,a,h3{
+            font-family: 'Comfortaa', cursive;
+    }
+    .content h2{
+        color:white;
+        text-align: center;
+        font-size: 25px;
+        width:100%;
+        border-bottom: 1px solid white;
+        margin: 0px;
+        padding: 25px;
+    }
+    .content h2:last-child{
+        border-bottom:none;
+    }
+    .content h2:hover{
+        background-color: #4B6595;
+        cursor: pointer;
+    }
+</style>
+    </head>
+    <body onload="load()">
+        <div class="container">
+            <button class="btn" style="background-color:#5D30E3;color:white;float:right;"onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+            <div style="display:flex;justify-content: center;margin-top: 50px;">
+                <h2 style="color:white;margin-right:15px;font-weight: bold;">Chaterz</h2>
+                <img src="chat.png" width="60px">
+            </div>
+            <br>
+            <h3 id="name" style="text-align:center;color:#4B6595;font-weight:bold;">Hello,</h3>
+            <div style="background-color:#7495ce;border-radius:20px;width:80%;margin:auto;padding: 10px;" class="content">
+                <h2 onclick="proceed('announcements')">Announcements</h2>
+                <h2 onclick="proceed('solving')">Doubt Solving</h2>
+                <h2 onclick="proceed('security')">Cyber Security</h2>
+                <h2 onclick="proceed('advisory')">Mental Health Advisory</h2>
+                <h2 onclick="proceed('book')">Book Club</h2>
+                <h2 onclick="proceed('physical')">Physical and Health Club</h2>
+                <h2 onclick="proceed('spiritual')">Spirituality and Yoga Club</h2>
+            </div>
+        </div>
+        <script>
+             const firebaseConfig = {
+            apiKey: "AIzaSyByVshYif3-IBm1scaC8E6dbJvI2hAUMYU",
+            authDomain: "chaterz-d1e56.firebaseapp.com",
+            databaseURL: "https://chaterz-d1e56.firebaseio.com",
+            projectId: "chaterz-d1e56",
+            storageBucket: "chaterz-d1e56.appspot.com",
+            messagingSenderId: "247244392130",
+            appId: "1:247244392130:web:baf77356e3d5fe85f29d5b"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            function load(){
+                code = localStorage.getItem("chat");
+                if(code == null){
+                    alert("Please login");
+                    window.location = "index.html";
+                }else{
+                    firebase.database().ref("/" + "Accounts").on('value', function (snapshot) {
+              snapshot.forEach(function (childSnapshot) {
+                        values = childSnapshot.val();
+                        codes = values["Hash"];
+                        if(code == codes){
+                            document.getElementById("name").innerHTML = "Hello, "+values["Username"]+"!";
+                            return true;
+                        }
+                        
+                });
+          });
+                }
+            }
+            function logout(){
+                localStorage.removeItem("chat");
+                alert("You have been signed out");
+                window.location = "index.html";
+            }
+            function proceed(room){
+                localStorage.setItem("room",room);
+                window.location = "chat.html";
+            }
+        </script>
+    </body>
+</html>

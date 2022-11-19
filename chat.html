@@ -1,0 +1,129 @@
+<html>
+    <head>
+        <Title>Chaterz - Chat</Title>
+        <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+<style>
+body{
+        background-color: #0A194A;
+    }
+    h2,p,a,h3{
+            font-family: 'Comfortaa', cursive;
+    }
+    h4{
+        text-align:left;
+        margin-left: 10px;
+        color:#0A194A;
+    }
+    #names{
+        font-weight: bold;
+    }
+</style>
+    </head>
+    <body onload="load()">
+        <div class="container">
+            <button id="logout" onclick="logout()" class="btn btn-danger"><i class="fa fa-sign-out"></i>  Logout</button>
+            <button id="logout" onclick="back()" class="btn btn-success" style="float:right;"><i class="fa fa-arrow-left"></i>  Back</button>
+            <div style="display:flex;justify-content: center;margin-top: 50px;">
+                <h2 style="color:white;margin-right:15px;font-weight: bold;">Chaterz</h2>
+                <img src="chat.png" width="60px">
+            </div>
+            <br>
+            <center>
+                <div style="background-color:#7495ce;border-radius:20px;width:80%;margin:auto;padding: 10px;height:60%;overflow-y: auto;" id="output"></div>
+            </center>
+        </div>
+        <center>
+            <div style="position: fixed;bottom: 0px;width: 100%;background:#7495ce;height:55px;padding:10px;">
+                <div style="display:flex;justify-content: center;">
+                    <input type="text" class="form-control" id="input" placeholder="Write Message Here"style="width:70%;">
+                    <button class="btn"style="width:20%;background-color:#5D30E3;color:white" onclick="send()">Send  <i class="fa fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </center>
+        <script>
+            const firebaseConfig = {
+            apiKey: "AIzaSyByVshYif3-IBm1scaC8E6dbJvI2hAUMYU",
+            authDomain: "chaterz-d1e56.firebaseapp.com",
+            databaseURL: "https://chaterz-d1e56.firebaseio.com",
+            projectId: "chaterz-d1e56",
+            storageBucket: "chaterz-d1e56.appspot.com",
+            messagingSenderId: "247244392130",
+            appId: "1:247244392130:web:baf77356e3d5fe85f29d5b"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            myname = "";
+            myroom = "";
+            function load(){
+                code = localStorage.getItem("chat");
+                place = localStorage.getItem("room");
+                if(code==null){
+                    alert("Please Signin to Continue");
+                    window.location = "index.html";
+                }else if(place == null){
+                    alert("Error");
+                    window.location = "rooms.html";
+                }else{
+                    //Getting the name of the person through the hash code
+                    myroom = place;
+                    firebase.database().ref("/" + "Accounts").on('value', function (snapshot) {
+              snapshot.forEach(function (childSnapshot) {
+                        values = childSnapshot.val();
+                        codes = values["Hash"];
+                        if(code == codes){
+                            myname = values["Username"];
+                            return true;
+                        }
+                        
+                });
+          });
+          //Getting the already existing messages
+          firebase.database().ref("/" + myroom).on('value', function (snapshot) {
+            document.getElementById("output").innerHTML = ""; 
+            snapshot.forEach(function (childSnapshot) {
+                  childKey = childSnapshot.key; 
+                  childData = childSnapshot.val(); 
+                    name = childData["Name"];
+                    Message = childData["Message"];
+                    name_tag = "<h4 id='names'>"+name+"  <img src='check.png' width='20'></h4>";
+                    message_tag = "<h4 message_h4>"+Message+"</h4>";
+                    row = name_tag+message_tag+"<hr>";
+                    document.getElementById("output").innerHTML += row;
+
+            });
+      });
+                }
+            }
+            function send(){
+    msg = document.getElementById("input").value;
+      firebase.database().ref(myroom).push({
+            Name:myname,
+            Message:msg
+      });
+      document.getElementById("input").value = "";
+            }
+            function logout(){
+                localStorage.removeItem("chat");
+                localStorage.removeItem("room");
+                alert("You have been signed out");
+                window.location = "index.html";
+            }
+            function back(){
+                localStorage.removeItem("room");
+                window.location = "rooms.html";
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <Title>Chaterz - Login</Title>
+        <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+  
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body{
+            background-color: #0A194A;
+        }
+        h2,p,a{
+            font-family: 'Comfortaa', cursive;
+        }
+        a{
+            text-align: center !important;
+        }
+        p{
+            color:#5671A0;
+        }
+        .container{
+            display:flex;
+            justify-content: center;
+            width:100%;
+            height:100vh;
+        }
+        .center-text{
+            margin:auto !important;
+        }
+    </style>
+    </head>
+    <body onload="load()">
+    <div style="text-align:right;position:absolute;padding-top: 30px;right:30px">
+        <a href="mailto:noobe.bot2@gmail.com?subject=I want to create an account for Chaterz" style="color:#8AAEDC;font-size: 15px;">Signup &rarr;</a>
+    </div>
+    <div class="container">
+        <div class="center-text">
+        <h2 style="color:white;font-weight:bold;letter-spacing:1px;">Login to Chaterz.</h2>
+        <p>Lets make more engaging school community</p>
+        <br><br>
+            <p>Username</p>
+            <input type="text" maxlength="25" style="width:350px;margin:auto;" class="form-control" id="name">
+        <br>
+        <p>Password</p>
+        <input type="password" maxlength="25" style="width:350px;margin:auto;"class="form-control" id="pass">
+        <br>
+        <button class="btn" style="background-color:#5D30E3;color:white;width:350px;font-size:17px;" onclick="login()">LOGIN</button><br><br>
+        <div style="text-align:center;text-decoration: none;">
+            <a style="color:#474F65;" href="mailto:noobe.bot2@gmail.com?subject=I forgot the Password to Chaterz">Forgot Password?</a>
+        </div>
+        </div>
+    </div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyByVshYif3-IBm1scaC8E6dbJvI2hAUMYU",
+            authDomain: "chaterz-d1e56.firebaseapp.com",
+            databaseURL: "https://chaterz-d1e56.firebaseio.com",
+            projectId: "chaterz-d1e56",
+            storageBucket: "chaterz-d1e56.appspot.com",
+            messagingSenderId: "247244392130",
+            appId: "1:247244392130:web:baf77356e3d5fe85f29d5b"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+        function load(){
+            if(localStorage.getItem("chat")!=null){
+                alert("You are already logged in. Logout and Try again");
+                window.location = "rooms.html";
+            }
+        }
+        function login(){
+            uname = document.getElementById("name").value;
+            pass = document.getElementById("pass").value;
+            if(uname==""||pass==""){
+                alert("Please fill the empty boxes.");
+            }else{
+                firebase.database().ref("/" + "Accounts").on('value', function (snapshot) {
+              snapshot.forEach(function (childSnapshot) {
+                        values = childSnapshot.val();
+                        usname = values["Username"];
+                        if(uname == usname && pass == values["Password"]){
+                            alert("Logged in");
+                            localStorage.setItem("chat",values["Hash"]);
+                            window.location = "rooms.html";
+                            return true;
+                        }else if(uname == usname && pass != values["Password"]){
+                            alert("Wrong Password!")
+                            return true;
+                        }
+                        
+                });
+          });
+            }
+        }
+    </script>
+    </body>
+</html>
